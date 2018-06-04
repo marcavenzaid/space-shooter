@@ -102,12 +102,12 @@ public class DestroyByContact : MonoBehaviour {
             RePool(other.gameObject);
         }
 
-        if ((gameObject.CompareTag("Enemy") || gameObject.CompareTag("Boss")) 
-            && (other.CompareTag("PlayerBolt") || other.CompareTag("Player"))) {
-            if (enemy.IsAlive()) {                
-                gameController.AddScore(enemy.GetScore());
-            }
-        }        
+        //if ((gameObject.CompareTag("Enemy") || gameObject.CompareTag("Boss")) 
+        //    && (other.CompareTag("PlayerBolt") || other.CompareTag("Player"))) {
+        //    if (enemy.IsAlive()) {                
+        //        gameController.AddScore(enemy.GetScore());
+        //    }
+        //}        
     }    
 
     void GetDamageValue() {
