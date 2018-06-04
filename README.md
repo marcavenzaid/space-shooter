@@ -1,2 +1,2 @@
-# Space-Shooter-Game
-A Space Shooter game made in unity and written in C#
+# Stellaren Shooter
+A space shooter game made in unity and written in C#
