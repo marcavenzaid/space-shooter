@@ -4,16 +4,15 @@ using System.Collections;
 [RequireComponent(typeof(Enemy))]
 public class DestroyByContact : MonoBehaviour {
 
-    public GameObject explosion; //d
     public GameObject playerExplosion; //d, put this on player controller, or new script
     private GameController gameController;
     private GameObject playerObject;
     private GameObject playerBoltExplosion;
-    private GameObject boltExplosion;
+    private GameObject shotExplosion;
     private int damage;    // ??
     private Enemy enemy;
 
-    void Start () {
+    private void Start () {
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
 
         if (gameControllerObject != null) {
@@ -30,56 +29,26 @@ public class DestroyByContact : MonoBehaviour {
         enemy = GetComponent<Enemy>();
     }    
 
-    void OnTriggerEnter(Collider other) {
-        if (other.CompareTag("Boundary")) {
+    private void OnTriggerEnter(Collider other) {
+        if(IsToIgnore(other)) {
             return;
         }
-        // This else if needs to be in this order because both gameObjects have DestroyByContact class component
-        else if (gameObject.CompareTag("Enemy") && other.CompareTag("EnemyBolt") ||
-                 gameObject.CompareTag("EnemyBolt") && other.CompareTag("Enemy") ||
-                 gameObject.CompareTag("EnemyBolt") && other.CompareTag("Boss") ||
-                 gameObject.CompareTag("Boss") && other.CompareTag("EnemyBolt")) {
-            return;
-        } else if (gameObject.CompareTag("Enemy") && other.CompareTag("Enemy") ||
-                   gameObject.CompareTag("Enemy") && other.CompareTag("Boss") ||
-                   gameObject.CompareTag("Boss") && other.CompareTag("Enemy")) {
-            return;
-        } else if (gameObject.CompareTag("EnemyBolt") && other.CompareTag("EnemyBolt")) {
-            return;
-        } else if (gameObject.CompareTag("EnemyBolt") && other.CompareTag("PlayerBolt")) {
-            return;
-        } else if (gameObject.CompareTag("EnemyBolt") && other.CompareTag("Player")) {
-            // If not null then call Explode() for effects.
+
+        GetShotProperties();
+
+        if (gameObject.CompareTag("EnemyBolt") && other.CompareTag("Player")) {
             if (GetComponent<Scatter>() != null) {
                 GetComponent<Scatter>().Explode();
             }
-            
-            if (GetComponent<BoltMover>() != null) {
-                boltExplosion = GetComponent<BoltMover>().boltExplosion;
-            } else if (GetComponent<FollowMovement>() != null) {
-                boltExplosion = GetComponent<FollowMovement>().boltExplosion;
-            } else if (GetComponent<VectorMovement>() != null) {
-                boltExplosion = GetComponent<VectorMovement>().boltExplosion;
-            } else if (GetComponent<MissileMover>() != null) {
-                boltExplosion = GetComponent<MissileMover>().boltExplosion;
-            } else {
-                boltExplosion = null;
-            }
 
-            if (boltExplosion != null) {
-                Instantiate(boltExplosion, transform.position, transform.rotation);
-            }            
-
-            // Get the int damage value by getting the reference from the script used.
-            GetDamageValue();
+            if (shotExplosion != null) {
+                Instantiate(shotExplosion, transform.position, transform.rotation);
+            }                        
 
             int playerHealth = other.GetComponent<PlayerController>().GetHealth();
-
             other.GetComponent<HealthBar>().TakeDamage(damage);
             other.GetComponent<PlayerController>().SubtractHealth(damage);
-            playerHealth -= damage;
-                       
-            // Destroy player if health is less than zero.
+            playerHealth -= damage;                       
             if (playerHealth <= 0) {
                 Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
                 Destroy(other.gameObject); // Destroy player gameObject if health is less than zero.
@@ -96,7 +65,7 @@ public class DestroyByContact : MonoBehaviour {
             Instantiate(playerBoltExplosion, other.transform.position, other.transform.rotation);
         }
 
-        if (gameObject.CompareTag("EnemyBolt") && boltExplosion != null) {
+        if (gameObject.CompareTag("EnemyBolt") && shotExplosion != null) {
             RePool(gameObject);
         } else if (other.CompareTag("PlayerBolt")) {
             RePool(other.gameObject);
@@ -108,21 +77,44 @@ public class DestroyByContact : MonoBehaviour {
         //        gameController.AddScore(enemy.GetScore());
         //    }
         //}        
-    }    
-
-    void GetDamageValue() {
-        if (gameObject.GetComponent<BoltMover>() != null) {
-            damage = gameObject.GetComponent<BoltMover>().damage;
-        } else if (gameObject.GetComponent<MissileMover>() != null) {
-            damage = gameObject.GetComponent<MissileMover>().damage;
-        } else if (gameObject.GetComponent<VectorMovement>() != null) {
-            damage = gameObject.GetComponent<VectorMovement>().damage;
-        } else if (gameObject.GetComponent<FollowMovement>() != null) {
-            damage = gameObject.GetComponent<FollowMovement>().damage;
-        }        
     }
 
-    void RePool(GameObject thisGameObject) {
+    private bool IsToIgnore(Collider other) {
+        if (other.CompareTag("Boundary")) {
+            return true;
+        } else if (gameObject.CompareTag("Enemy") && other.CompareTag("EnemyBolt") ||
+                   gameObject.CompareTag("EnemyBolt") && other.CompareTag("Enemy") ||
+                   gameObject.CompareTag("EnemyBolt") && other.CompareTag("Boss") ||
+                   gameObject.CompareTag("Boss") && other.CompareTag("EnemyBolt")) {
+            // This else if needs to be in this order because both gameObjects have DestroyByContact class component
+            return true;
+        } else if (gameObject.CompareTag("EnemyBolt") && other.CompareTag("EnemyBolt")) {
+            return true;
+        } else if (gameObject.CompareTag("EnemyBolt") && other.CompareTag("PlayerBolt")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void GetShotProperties() {        
+        if (gameObject.name == "BoltBlue(Clone)" || gameObject.name == "BoltRed(Clone)" || gameObject.name == "OrbBlue(Clone)"
+                || gameObject.name == "OrbOrange(Clone)" || gameObject.name == "OrbPink(Clone)" || gameObject.name == "Bomd(Clone)"
+                || gameObject.name == "BombConstant(Clone)" || gameObject.name == "Fragments(Clone)") {
+            damage = gameObject.GetComponent<BoltMover>().damage;
+            shotExplosion = GetComponent<BoltMover>().boltExplosion;
+        } else if (gameObject.name == "Missile(Clone)") {
+            damage = gameObject.GetComponent<MissileMover>().damage;
+            shotExplosion = gameObject.GetComponent<MissileMover>().boltExplosion;
+        } else if (gameObject.name == "VectorOrb(Clone)") {
+            damage = gameObject.GetComponent<VectorMovement>().damage;
+            shotExplosion = GetComponent<VectorMovement>().boltExplosion;
+        } else if (gameObject.name == "SensoredOrb(Clone)") {
+            damage = gameObject.GetComponent<FollowMovement>().damage;
+            shotExplosion = GetComponent<FollowMovement>().boltExplosion;
+        }
+    }
+    
+    private void RePool(GameObject thisGameObject) {
         thisGameObject.SetActive(false);        
     }    
 }

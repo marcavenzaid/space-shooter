@@ -132,10 +132,10 @@ public class WeaponControllerPatterns : MonoBehaviour {
         if (index % 20 == 0) {
             float rotationSpeed2 = 40.0f;
             leftShotSpawn.rotation = Quaternion.Euler(0.0f, Time.time * rotationSpeed2, 0.0f);
-            Fire(leftShotSpawn.position, leftShotSpawn.rotation, "OrbHuge(Clone)");
+            Fire(leftShotSpawn.position, leftShotSpawn.rotation, "OrbPurple(Clone)");
 
             rightShotSpawn.rotation = Quaternion.Euler(0.0f, Time.time * -rotationSpeed2, 0.0f);
-            Fire(rightShotSpawn.position, rightShotSpawn.rotation, "OrbHuge(Clone)");
+            Fire(rightShotSpawn.position, rightShotSpawn.rotation, "OrbPurple(Clone)");
         }
         index++;
     }
@@ -179,7 +179,7 @@ public class WeaponControllerPatterns : MonoBehaviour {
     private void VectorSpread() {
         for (int i = 0; i < 16; i++) {
             middleShotSpawn.rotation = Quaternion.Euler(0.0f, i * 12.0f - 90.0f, 0.0f); // 37.5 is offset, 5 is degree.
-            Fire(middleShotSpawn.position, middleShotSpawn.rotation, "VectorCircle(Clone)");
+            Fire(middleShotSpawn.position, middleShotSpawn.rotation, "VectorOrb(Clone)");
         }
     }
 
