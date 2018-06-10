@@ -127,13 +127,13 @@ public class EnemySpawnerScript : MonoBehaviour {
         // Boss Appearance        
         yield return new WaitForSeconds(3);
         // Stop the firing of the player.
-        GameObject.FindWithTag("Player").GetComponent<PlayerController>().InvokeFire(false);
+        GameObject.FindWithTag("Player").GetComponent<Player>().InvokeFire(false, 0);
 
         yield return new WaitForSeconds(3);
         SpawnPooled("AK5(Clone)", new Vector3(0.0f, 0.0f, 24), Quaternion.identity);
 
         // Invoke the firing of the player.
         yield return new WaitForSeconds(15);
-        GameObject.FindWithTag("Player").GetComponent<PlayerController>().InvokeFire(true);
+        GameObject.FindWithTag("Player").GetComponent<Player>().InvokeFire(true, 0);
     }    
 }

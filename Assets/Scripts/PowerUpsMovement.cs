@@ -31,9 +31,9 @@ public class PowerUpsMovement : MonoBehaviour {
         }
 
         rb.position = new Vector3(
-            Mathf.Clamp(rb.position.x, boundary.xMin, boundary.xMax),
+            Mathf.Clamp(rb.position.x, boundary.GetXMin(), boundary.GetXMax()),
             0.0f,
-            Mathf.Clamp(rb.position.z, boundary.zMin, boundary.zMax)
+            Mathf.Clamp(rb.position.z, boundary.GetZMin(), boundary.GetZMax())
         );
     }
 

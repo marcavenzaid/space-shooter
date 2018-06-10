@@ -73,10 +73,10 @@ public class BeamCollision : MonoBehaviour {
 
                 //g edited (DestroyByContact for this beam)===
                 if (hit.collider.gameObject.CompareTag("Player")) {
-                    int playerHealth = hit.collider.gameObject.GetComponent<PlayerController>().GetHealth();
+                    int playerHealth = hit.collider.gameObject.GetComponent<Player>().GetHealth();
 
                     hit.collider.gameObject.GetComponent<HealthBar>().TakeDamage(damage);
-                    hit.collider.gameObject.GetComponent<PlayerController>().SubtractHealth(damage);
+                    hit.collider.gameObject.GetComponent<Player>().SubtractHealth(damage);
                     playerHealth -= damage;
 
                     if (playerHealth <= 0) {

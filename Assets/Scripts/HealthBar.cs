@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(PlayerController))]
+[RequireComponent(typeof(Player))]
 public class HealthBar : MonoBehaviour {
 
     [SerializeField] private Text healthDigits;
@@ -13,18 +13,18 @@ public class HealthBar : MonoBehaviour {
     [SerializeField] private Image damageFlashImage;
     [SerializeField] private float damageFlashSpeed = 5f;
     [SerializeField] private Color damageFlashColour = new Color(1f, 0f, 0f, 0.2f);
-    private PlayerController playerController;
+    private Player player;
     private int currentHealth;
     private int maxHealth;
     private bool damaged;
 
     void Start() {
-        playerController = GetComponent<PlayerController>();
-        maxHealth = playerController.GetMaxHealth();
+        player = GetComponent<Player>();
+        maxHealth = player.GetMaxHealth();
         currentHealth = maxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
-        healthDigits.text = playerController.GetHealth() + " / " + maxHealth;  
+        healthDigits.text = player.GetHealth() + " / " + maxHealth;  
     }
 
     void Update() {
@@ -34,7 +34,7 @@ public class HealthBar : MonoBehaviour {
     private void FlashScreenOnDamage() {
         if (damaged) {
             damageFlashImage.color = damageFlashColour;
-            playerController.ResetUpgrades();
+            player.ResetUpgrades();
         } else {
             damageFlashImage.color = Color.Lerp(damageFlashImage.color, Color.clear, damageFlashSpeed * Time.deltaTime);
         }
