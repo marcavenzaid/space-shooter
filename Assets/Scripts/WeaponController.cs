@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class WeaponController : MonoBehaviour {
 
-    public Transform[] shotSpawn;
+    public Transform shotSpawns;
+    private Transform[] shotSpawnArr;
     public float fireRate;
     public float delay;
 
@@ -14,29 +15,43 @@ public class WeaponController : MonoBehaviour {
     private AudioSource audioSource;
     private float ammunationsFired;
 
+    private void Awake() {
+        if(shotSpawns.childCount > 0) {
+            shotSpawnArr = new Transform[shotSpawns.childCount];
+            for (int i = 0; i < shotSpawns.childCount; i++) {
+                shotSpawnArr[i] = shotSpawns.GetChild(i);
+            }
+        } else {
+            shotSpawnArr = new Transform[] { shotSpawns };
+        }
+        
+    }
+
     void Start() {
         audioSource = GetComponent<AudioSource>();
     }
 
-    // InvokeRepeating Fire() if the enemy ship is spawned in the game.
     void OnEnable() {
         InvokeRepeating("Fire", delay, fireRate);
     }
 
     // Cancel firing or reloading when disabled by RePool().
     void OnDisable() {
-        CancelInvoke();
+        StopFiring();
         ammunationsFired = 0;
     }
 
     void Fire() {
-        for (int i = 0; i < shotSpawn.Length; i++) {
+        for (int i = 0; i < shotSpawnArr.Length; i++) {
             GameObject obj = GetComponent<ObjectPoolerScript>().GetPooledObject();
 
-            if (obj == null) return;
+            if (obj == null) {
+                return;
+            }
 
-            obj.transform.position = new Vector3(shotSpawn[i].position.x, 0.0f, shotSpawn[i].position.z);
-            obj.transform.rotation = Quaternion.Euler(0.0f, shotSpawn[i].eulerAngles.y, 0.0f);
+            shotSpawnArr[i].rotation = Quaternion.identity;
+            obj.transform.position = new Vector3(shotSpawnArr[i].position.x, 0.0f, shotSpawnArr[i].position.z);
+            obj.transform.rotation = shotSpawnArr[i].rotation;
             obj.SetActive(true);
 
             //---
@@ -57,7 +72,6 @@ public class WeaponController : MonoBehaviour {
         InvokeRepeating("Fire", 0.0f, fireRate);
     }
 
-    // Cancels firing and reloading. e.x stop firing if dead.
     public void StopFiring() {
         CancelInvoke();
     }

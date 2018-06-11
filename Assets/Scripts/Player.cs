@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
@@ -11,16 +12,17 @@ public class Player : MonoBehaviour {
     [SerializeField] private float fireRateIncreaseRate = 0.05f;
     [SerializeField] private GameObject shot;
     [SerializeField] private Transform shotSpawns;
-    private List<Transform> shotSpawnsList = new List<Transform>();
+    private List<Transform> shotSpawnList = new List<Transform>();
     private Transform[] currentShotSpawns; // Changed by powerups, using PowerUpsManager.cs
     private int weaponLevel;    
     private int maxHealth;
     private float defaultFireRate;
+    private float lowestFireRate = 0.1f;
 
     private void Awake () {
         foreach (Transform t in shotSpawns) {
-            shotSpawnsList.Add(t);
-        };        
+            shotSpawnList.Add(t);
+        }     
         maxHealth = health;
         SetWeaponLevel(1);
         defaultFireRate = fireRate;
@@ -62,9 +64,9 @@ public class Player : MonoBehaviour {
         return shotSpawns;
     }
 
-    public Transform[] GetCurrentShotSpawns() {
-        return currentShotSpawns;
-    }
+    //public List<Transform> GetCurrentShotSpawns() {
+    //    return currentShotSpawns;
+    //}
 
     public void InvokeFire(bool fire, float time) {
         if (fire) {
@@ -81,6 +83,7 @@ public class Player : MonoBehaviour {
             if (obj == null) {
                 return;
             }
+            shotSpawns.rotation = Quaternion.identity;
             obj.transform.position = currentShotSpawns[i].position;
             obj.transform.rotation = currentShotSpawns[i].rotation;
             obj.SetActive(true);
@@ -88,14 +91,17 @@ public class Player : MonoBehaviour {
         GetComponent<AudioSource>().Play();
     }
 
-    public void ResetFire() {
+    private void ResetFire() {
         InvokeFire(false, fireRate);
         InvokeFire(true, fireRate);
     }
 
     public void UpgradeFireRate() {
-        if (fireRate < 0.1f) {
+        if (fireRate > lowestFireRate) {
             fireRate -= fireRateIncreaseRate;
+            if(fireRate < lowestFireRate) {
+                fireRate = lowestFireRate;
+            }
         }
         ResetFire();
     }
@@ -109,16 +115,16 @@ public class Player : MonoBehaviour {
 
         switch (level) {
             case 1:
-                currentShotSpawns = shotSpawnsList.GetRange(0, 1).ToArray();
+                currentShotSpawns = shotSpawnList.GetRange(0, 1).ToArray();
                 break;
             case 2:
-                currentShotSpawns = shotSpawnsList.GetRange(1, 2).ToArray();
+                currentShotSpawns = shotSpawnList.GetRange(1, 2).ToArray();
                 break;
             case 3:
-                currentShotSpawns = shotSpawnsList.GetRange(0, 3).ToArray();
+                currentShotSpawns = shotSpawnList.GetRange(0, 3).ToArray();
                 break;
             case 4:
-                currentShotSpawns = shotSpawnsList.GetRange(0, 5).ToArray();
+                currentShotSpawns = shotSpawnList.GetRange(0, 5).ToArray();
                 break;
         }
     }

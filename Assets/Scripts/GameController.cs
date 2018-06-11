@@ -7,9 +7,9 @@ public class GameController : MonoBehaviour {
 
     [SerializeField] private GameObject bossHealthBar; // used only when boss appeared.
     [SerializeField] private Slider bossHealthSlider;
-    [SerializeField] private GUIText scoreText;
-    [SerializeField] private GUIText restartText;
-    [SerializeField] private GUIText gameOverText;
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text restartText;
+    [SerializeField] private Text gameOverText;
     private bool gameOver;
     private int score;
 
