@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(GameController))]
 public class Player : MonoBehaviour {
-
+    
     [SerializeField] private Boundary boundary = new Boundary(-8, 8, -7, 12);
+    [SerializeField] private GameObject explosion;
     [SerializeField] private int health = 100;    
     [SerializeField] private float speed = 10;
     [SerializeField] private float tiltStrength = 4;    
@@ -18,8 +20,11 @@ public class Player : MonoBehaviour {
     private int maxHealth;
     private float defaultFireRate;
     private float lowestFireRate = 0.1f;
+    private GameController gameController;
 
     private void Awake () {
+        gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
+
         foreach (Transform t in shotSpawns) {
             shotSpawnList.Add(t);
         }     
@@ -38,10 +43,28 @@ public class Player : MonoBehaviour {
 
     public int GetMaxHealth() {
         return maxHealth;
-    }    
+    }
 
-    public void SubtractHealth(int value) {
-        health -= value;
+    public bool IsAlive() {
+        return GetHealth() > 0;
+    }
+
+    public void TakeDamage(int damage) {
+        health -= damage;
+        if (!IsAlive()) {
+            health = 0;
+            Death();            
+        }
+    }
+
+    private void Death() {
+        Instantiate(explosion, transform.position, transform.rotation);
+        Destroy(gameObject); // Destroy player gameObject if health is less than zero.
+        gameController.GameOver();
+
+        if (GetComponent<DisableOnDeath>() != null) {
+            GetComponent<DisableOnDeath>().Disable();
+        }
     }
 
     public float GetSpeed() {
@@ -62,11 +85,7 @@ public class Player : MonoBehaviour {
 
     public Transform GetShotSpawn() {
         return shotSpawns;
-    }
-
-    //public List<Transform> GetCurrentShotSpawns() {
-    //    return currentShotSpawns;
-    //}
+    }    
 
     public void InvokeFire(bool fire, float time) {
         if (fire) {

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 
-public class TumbleWhenDead : MonoBehaviour {
+public class Tumble : MonoBehaviour {
 
     public float speed;
     public float[] rangeAngularVelocityX = new float[2];

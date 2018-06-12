@@ -1,12 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(WeaponControllerPatterns))]
 [RequireComponent(typeof(ComplexEvasiveManeuver2))]
 [RequireComponent(typeof(ExplodeInDeath))]
-[RequireComponent(typeof(TumbleWhenDead))]
+[RequireComponent(typeof(Tumble))]
 public class Boss : MonoBehaviour {
     
     private Slider healthSlider;
@@ -27,7 +25,7 @@ public class Boss : MonoBehaviour {
         gameObject.GetComponent<WeaponControllerPatterns>().enabled = true;
         gameObject.GetComponent<ComplexEvasiveManeuver2>().enabled = true;
         gameObject.GetComponent<ExplodeInDeath>().enabled = false;
-        gameObject.GetComponent<TumbleWhenDead>().enabled = false;
+        gameObject.GetComponent<Tumble>().enabled = false;
     }    
 
     public void DecreaseHealthBar(int damage) {
@@ -41,7 +39,7 @@ public class Boss : MonoBehaviour {
         gameObject.GetComponent<ComplexEvasiveManeuver2>().StopAllCoroutines();
         gameObject.GetComponent<ComplexEvasiveManeuver2>().enabled = false;
         gameObject.GetComponent<ExplodeInDeath>().enabled = true;
-        gameObject.GetComponent<TumbleWhenDead>().enabled = true;
+        gameObject.GetComponent<Tumble>().enabled = true;
         gameController.SetBossHeathBarActive(false);
     }
 }

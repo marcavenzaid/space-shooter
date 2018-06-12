@@ -6,7 +6,7 @@ public class WeaponController : MonoBehaviour {
     public Transform shotSpawns;
     private Transform[] shotSpawnArr;
     public float fireRate;
-    public float delay;
+    public float firstAttackDelay;
 
     public bool reloadable;
     public int ammunation;
@@ -32,7 +32,7 @@ public class WeaponController : MonoBehaviour {
     }
 
     void OnEnable() {
-        InvokeRepeating("Fire", delay, fireRate);
+        InvokeRepeating("Fire", firstAttackDelay, fireRate);
     }
 
     // Cancel firing or reloading when disabled by RePool().
@@ -60,7 +60,7 @@ public class WeaponController : MonoBehaviour {
                 ammunationsFired++;
                 if (ammunationsFired >= ammunation) {
                     CancelInvoke("Fire");
-                    Invoke("Reload", reloadTime); // This will stand as a wait time.
+                    Invoke("Reload", reloadTime);
                 }
             }
         }
@@ -69,7 +69,7 @@ public class WeaponController : MonoBehaviour {
 
     void Reload() {
         ammunationsFired = 0;
-        InvokeRepeating("Fire", 0.0f, fireRate);
+        InvokeRepeating("Fire", 0, fireRate);
     }
 
     public void StopFiring() {

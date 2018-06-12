@@ -171,7 +171,7 @@ public class WeaponControllerPatterns : MonoBehaviour {
     }
 
     private void SensoredSpiral() {
-        float rotationSpeed = -100.0f;
+        float rotationSpeed = -90.0f;
         middleShotSpawn.rotation = Quaternion.Euler(0.0f, Time.time * rotationSpeed, 0.0f);
         Fire(middleShotSpawn.position, middleShotSpawn.rotation, "SensoredOrb(Clone)");
     }

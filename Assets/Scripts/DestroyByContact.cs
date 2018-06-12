@@ -4,8 +4,6 @@ using System.Collections;
 [RequireComponent(typeof(Enemy))]
 public class DestroyByContact : MonoBehaviour {
 
-    public GameObject playerExplosion; //d, put this on player controller, or new script
-    private GameController gameController;
     private GameObject playerObject;
     private GameObject playerBoltExplosion;
     private GameObject shotExplosion;
@@ -13,14 +11,6 @@ public class DestroyByContact : MonoBehaviour {
     private Enemy enemy;
 
     private void Start () {
-        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
-
-        if (gameControllerObject != null) {
-            gameController = gameControllerObject.GetComponent<GameController>();
-        } else {
-            Debug.Log("Cannot find 'Game Controller' script");
-        }
-
         playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null) {
             playerBoltExplosion = playerObject.GetComponent<Player>().GetShotGameObject().GetComponent<BoltMover>().boltExplosion;
@@ -45,15 +35,8 @@ public class DestroyByContact : MonoBehaviour {
                 Instantiate(shotExplosion, transform.position, transform.rotation);
             }                        
 
-            int playerHealth = other.GetComponent<Player>().GetHealth();
             other.GetComponent<HealthBar>().TakeDamage(damage);
-            other.GetComponent<Player>().SubtractHealth(damage);
-            playerHealth -= damage;                       
-            if (playerHealth <= 0) {
-                Instantiate(playerExplosion, other.transform.position, other.transform.rotation);
-                Destroy(other.gameObject); // Destroy player gameObject if health is less than zero.
-                gameController.GameOver();
-            }
+            other.GetComponent<Player>().TakeDamage(damage);
         } else if (gameObject.CompareTag("Enemy") && other.CompareTag("PlayerBolt")) {
             damage = other.GetComponent<BoltMover>().damage;
             enemy.TakeDamage(damage);

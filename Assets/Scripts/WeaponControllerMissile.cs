@@ -6,7 +6,7 @@ public class WeaponControllerMissile : MonoBehaviour {
     public GameObject shot;
     public Transform[] shotSpawns;
     public GameObject[] missiles;
-    public float delayMin, delayMax;
+    public float firstAttackDelayMin, firstAttackDelayMax;
     public float fireRateMin, fireRateMax;
 
     private float nextFire;
@@ -15,7 +15,7 @@ public class WeaponControllerMissile : MonoBehaviour {
     void OnEnable() {
         FisherYates2(shotSpawns, missiles); // randomize the array of shotSpawns.
         missileIndex = 0;
-        nextFire = Time.time + Random.Range(delayMin, delayMax);
+        nextFire = Time.time + Random.Range(firstAttackDelayMin, firstAttackDelayMax);
         for (int i = 0; i < missiles.Length; i++) {
             missiles[i].SetActive(true);
         }

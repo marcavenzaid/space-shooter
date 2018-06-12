@@ -7,20 +7,22 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     [SerializeField] private GameObject explosion;
-    [SerializeField] private int maxHealth;
-    private int currentHealth;
+    [SerializeField] private int health;
+    private int maxHealth;
     [SerializeField] private int score;
     private Boss boss;
     private DestructorEnemy destructorEnemy;
     private bool isBoss;
     private bool isDestructorEnemy;
     private PowerUpDroper powerUpDroper;
-    private bool isAlive;
+
+    private void Awake() {
+        maxHealth = health;
+    }
 
     private void OnEnable() {
-        currentHealth = maxHealth;
-        isAlive = true;
-    }
+        health = maxHealth;
+    }    
 
     private void Start () {
         if (gameObject.CompareTag("Boss")) {
@@ -34,7 +36,7 @@ public class Enemy : MonoBehaviour {
     }    
 
     public int GetHealth() {
-        return currentHealth;
+        return health;
     }
 
     public int GetMaxHealth() {
@@ -46,33 +48,32 @@ public class Enemy : MonoBehaviour {
     }
 
     public bool IsAlive() {
-        return isAlive;
+        return GetHealth() > 0;
     }
 
     public void TakeDamage(int damage) {
-        if(!IsAlive()) {
-            return;
-        }
-        currentHealth -= damage;
-        if (currentHealth <= 0) {
-            DestroyEnemy();
-            if (GetComponent<DisableOnDeath>() != null) {
-                GetComponent<DisableOnDeath>().Disable();
+        if (IsAlive()) {
+            health -= damage;
+            if (!IsAlive()) {
+                Death();                
             }
-            isAlive = false;
         }
     }
-
-    private void DestroyEnemy() {
+    
+    private void Death() {
         Instantiate(explosion, transform.position, transform.rotation);
         powerUpDroper.DropPowerUps();
         if (isDestructorEnemy) {
             destructorEnemy.DeathBehavior();
-        } else if (isBoss) {            
+        } else if (isBoss) {
             boss.DeathBehavior();            
         } else {
             PoolObject(gameObject);
-        }        
+        }
+
+        if (GetComponent<DisableOnDeath>() != null) {
+            GetComponent<DisableOnDeath>().Disable();
+        }
     }
 
     private void PoolObject(GameObject thisGameObject) {

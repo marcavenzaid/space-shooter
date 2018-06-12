@@ -76,7 +76,7 @@ public class BeamCollision : MonoBehaviour {
                     int playerHealth = hit.collider.gameObject.GetComponent<Player>().GetHealth();
 
                     hit.collider.gameObject.GetComponent<HealthBar>().TakeDamage(damage);
-                    hit.collider.gameObject.GetComponent<Player>().SubtractHealth(damage);
+                    hit.collider.gameObject.GetComponent<Player>().TakeDamage(damage);
                     playerHealth -= damage;
 
                     if (playerHealth <= 0) {

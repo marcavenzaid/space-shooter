@@ -1,7 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
+[RequireComponent(typeof(Tumble))]
 public class DestructorEnemy : MonoBehaviour {
 
     private void OnEnable() {
@@ -10,7 +9,7 @@ public class DestructorEnemy : MonoBehaviour {
         gameObject.GetComponent<WeaponController>().enabled = true;
         gameObject.GetComponent<WeaponControllerMissile>().enabled = true;
         gameObject.GetComponent<EvasiveManeuver>().enabled = true;
-        gameObject.GetComponent<TumbleWhenDead>().enabled = false;
+        gameObject.GetComponent<Tumble>().enabled = false;
     }
 
     public void DeathBehavior() {        
@@ -20,6 +19,6 @@ public class DestructorEnemy : MonoBehaviour {
         gameObject.GetComponent<Mover>().StopMoving();
         gameObject.GetComponent<EvasiveManeuver>().StopAllCoroutines();
         gameObject.GetComponent<EvasiveManeuver>().enabled = false;
-        gameObject.GetComponent<TumbleWhenDead>().enabled = true;
+        gameObject.GetComponent<Tumble>().enabled = true;
     }
 }

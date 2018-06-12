@@ -44,9 +44,9 @@ public class ComplexEvasiveManeuver2 : MonoBehaviour {
 
         rb.velocity = new Vector3(newManeuverX, 0.0f, newManeuverZ);
         rb.position = new Vector3(
-            Mathf.Clamp(rb.position.x, boundary.GetXMin(), boundary.GetXMax()),
+            Mathf.Clamp(rb.position.x, boundary.XMin, boundary.XMax),
             0.0f,
-            Mathf.Clamp(rb.position.z, boundary.GetZMin(), boundary.GetZMax())
+            Mathf.Clamp(rb.position.z, boundary.ZMin, boundary.ZMax)
         );
 
         rb.rotation = Quaternion.Euler(0.0f, 0.0f, rb.velocity.x * -tilt);

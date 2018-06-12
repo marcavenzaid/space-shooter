@@ -5,26 +5,27 @@ public class Boundary {
 
     [SerializeField] private float xMin, xMax, zMin, zMax;
 
+    public float XMin {
+        get { return xMin; }
+        set { xMin = value; }
+    }
+    public float XMax {
+        get { return xMax; }
+        set { xMax = value; }
+    }
+    public float ZMin {
+        get { return zMin; }
+        set { zMin = value; }
+    }
+    public float ZMax {
+        get { return zMax; }
+        set { zMax = value; }
+    }
+
     public Boundary(float xMin, float xMax, float zMin, float zMax) {
-        this.xMin = xMin;
-        this.xMax = xMax;
-        this.zMin = zMin;
-        this.zMax = zMax;
-    }
-
-    public float GetXMin() {
-        return xMin;
-    }
-
-    public float GetXMax() {
-        return xMax;
-    }
-
-    public float GetZMin() {
-        return zMin;
-    }
-
-    public float GetZMax() {
-        return zMax;
-    }
+        XMin = xMin;
+        XMax = xMax;
+        ZMin = zMin;
+        ZMax = zMax;
+    }    
 }
