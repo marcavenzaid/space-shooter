@@ -23,32 +23,30 @@ public class WeaponController : MonoBehaviour {
             }
         } else {
             shotSpawnArr = new Transform[] { shotSpawns };
-        }
-        
+        }        
     }
 
-    void Start() {
+    private void Start() {
         audioSource = GetComponent<AudioSource>();
     }
 
-    void OnEnable() {
+    private void OnEnable() {
         InvokeRepeating("Fire", firstAttackDelay, fireRate);
     }
 
     // Cancel firing or reloading when disabled by RePool().
-    void OnDisable() {
+    private void OnDisable() {
         StopFiring();
         ammunationsFired = 0;
     }
 
-    void Fire() {
+    private void Fire() {
         for (int i = 0; i < shotSpawnArr.Length; i++) {
             GameObject obj = GetComponent<ObjectPoolerScript>().GetPooledObject();
 
             if (obj == null) {
                 return;
             }
-
             shotSpawnArr[i].rotation = Quaternion.identity;
             obj.transform.position = new Vector3(shotSpawnArr[i].position.x, 0.0f, shotSpawnArr[i].position.z);
             obj.transform.rotation = shotSpawnArr[i].rotation;

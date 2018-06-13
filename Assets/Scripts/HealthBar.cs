@@ -14,17 +14,15 @@ public class HealthBar : MonoBehaviour {
     [SerializeField] private float damageFlashSpeed = 5f;
     [SerializeField] private Color damageFlashColour = new Color(1f, 0f, 0f, 0.2f);
     private Player player;
-    private int currentHealth;
     private int maxHealth;
     private bool damaged;
 
     void Start() {
         player = GetComponent<Player>();
-        maxHealth = player.GetMaxHealth();
-        currentHealth = maxHealth;
+        maxHealth = player.MaxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
-        healthDigits.text = player.GetHealth() + " / " + maxHealth;  
+        healthDigits.text = player.Health + " / " + maxHealth;  
     }
 
     void Update() {
@@ -41,11 +39,10 @@ public class HealthBar : MonoBehaviour {
         damaged = false;
     }
 
-    public void TakeDamage(int damage) {        
+    public void SetHealth(int health) {
         damaged = true;
-        currentHealth -= damage;
-        healthSlider.value = currentHealth;
+        healthSlider.value = health;
         healthColor.color = Color.Lerp(lowHealthColor, highHealthColor, healthSlider.value / maxHealth);
-        healthDigits.text = currentHealth + " / " + maxHealth;
+        healthDigits.text = health + " / " + maxHealth;
     }
 }

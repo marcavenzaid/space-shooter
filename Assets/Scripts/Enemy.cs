@@ -4,11 +4,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(DestroyByContact))]
 [RequireComponent(typeof(PowerUpDroper))]
-public class Enemy : MonoBehaviour {
+public class Enemy : Ship {
 
-    [SerializeField] private GameObject explosion;
-    [SerializeField] private int health;
-    private int maxHealth;
     [SerializeField] private int score;
     private Boss boss;
     private DestructorEnemy destructorEnemy;
@@ -16,15 +13,15 @@ public class Enemy : MonoBehaviour {
     private bool isDestructorEnemy;
     private PowerUpDroper powerUpDroper;
 
-    private void Awake() {
-        maxHealth = health;
+    protected override void Awake() {
+        base.Awake();
     }
 
     private void OnEnable() {
-        health = maxHealth;
-    }    
+        Health = MaxHealth;
+    }
 
-    private void Start () {
+    private void Start() {
         if (gameObject.CompareTag("Boss")) {
             boss = GetComponent<Boss>();
             isBoss = true;
@@ -33,35 +30,23 @@ public class Enemy : MonoBehaviour {
             isDestructorEnemy = true;
         }
         powerUpDroper = GetComponent<PowerUpDroper>();
-    }    
-
-    public int GetHealth() {
-        return health;
     }
 
-    public int GetMaxHealth() {
-        return maxHealth;
+    protected override void Fire() {
+
     }
 
-    public int GetScore() {
-        return score;
-    }
-
-    public bool IsAlive() {
-        return GetHealth() > 0;
-    }
-
-    public void TakeDamage(int damage) {
+    public override void TakeDamage(int damage) {
         if (IsAlive()) {
-            health -= damage;
+            base.TakeDamage(damage);
             if (!IsAlive()) {
                 Death();                
             }
         }
     }
     
-    private void Death() {
-        Instantiate(explosion, transform.position, transform.rotation);
+    protected override void Death() {
+        base.Death();
         powerUpDroper.DropPowerUps();
         if (isDestructorEnemy) {
             destructorEnemy.DeathBehavior();
@@ -74,6 +59,10 @@ public class Enemy : MonoBehaviour {
         if (GetComponent<DisableOnDeath>() != null) {
             GetComponent<DisableOnDeath>().Disable();
         }
+    }
+
+    public int GetScore() {
+        return score;
     }
 
     private void PoolObject(GameObject thisGameObject) {

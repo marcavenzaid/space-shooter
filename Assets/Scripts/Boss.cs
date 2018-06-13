@@ -19,7 +19,7 @@ public class Boss : MonoBehaviour {
         gameController.SetBossHeathBarActive(true);
         healthSlider = GameObject.FindWithTag("BossHealthSlider").GetComponent<Slider>();
         healthColor = GameObject.FindWithTag("BossHealthColor").GetComponent<Image>();                
-        maxHealth = GetComponent<Enemy>().GetMaxHealth();
+        maxHealth = GetComponent<Enemy>().MaxHealth;
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
         gameObject.GetComponent<WeaponControllerPatterns>().enabled = true;

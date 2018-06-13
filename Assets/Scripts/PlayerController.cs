@@ -17,12 +17,12 @@ public class PlayerController : MonoBehaviour {
 
     private void Start() {
         player = GetComponent<Player>();
-        boundaryXMin = player.GetBoundary().XMin;
-        boundaryXMax = player.GetBoundary().XMax;
-        boundaryZMin = player.GetBoundary().ZMin;
-        boundaryZMax = player.GetBoundary().ZMax;
-        speed = player.GetSpeed();
-        tiltStrength = player.GetTiltStrength();
+        boundaryXMin = player.Bounds.XMin;
+        boundaryXMax = player.Bounds.XMax;
+        boundaryZMin = player.Bounds.ZMin;
+        boundaryZMax = player.Bounds.ZMax;
+        speed = player.Speed;
+        tiltStrength = player.TiltStrength;
         player.InvokeFire(true, 1f);
     }       
 

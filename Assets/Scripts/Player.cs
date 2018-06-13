@@ -1,65 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(GameController))]
-public class Player : MonoBehaviour {
-    
-    [SerializeField] private Boundary boundary = new Boundary(-8, 8, -7, 12);
-    [SerializeField] private GameObject explosion;
-    [SerializeField] private int health = 100;    
-    [SerializeField] private float speed = 10;
-    [SerializeField] private float tiltStrength = 4;    
-    [SerializeField] private float fireRate = 0.5f;
+public class Player : Ship {
+   
     [SerializeField] private float fireRateIncreaseRate = 0.05f;
-    [SerializeField] private GameObject shot;
-    [SerializeField] private Transform shotSpawns;
+    private GameController gameController;
+    private HealthBar healthBar;
     private List<Transform> shotSpawnList = new List<Transform>();
     private Transform[] currentShotSpawns; // Changed by powerups, using PowerUpsManager.cs
-    private int weaponLevel;    
-    private int maxHealth;
+    private int weaponLevel;        
     private float defaultFireRate;
     private float lowestFireRate = 0.1f;
-    private GameController gameController;
 
-    private void Awake () {
-        gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
+    protected override void Awake () {        
+        base.Awake();
 
-        foreach (Transform t in shotSpawns) {
+        foreach (Transform t in ShotSpawns) {
             shotSpawnList.Add(t);
-        }     
-        maxHealth = health;
-        SetWeaponLevel(1);
-        defaultFireRate = fireRate;
-    }
-
-    public Boundary GetBoundary() {
-        return boundary;
-    }
-
-    public int GetHealth() {
-        return health;
-    }
-
-    public int GetMaxHealth() {
-        return maxHealth;
-    }
-
-    public bool IsAlive() {
-        return GetHealth() > 0;
-    }
-
-    public void TakeDamage(int damage) {
-        health -= damage;
-        if (!IsAlive()) {
-            health = 0;
-            Death();            
         }
+        SetWeaponLevel(1);
+        defaultFireRate = FireRate;
+        gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
+        healthBar = GetComponent<HealthBar>();
     }
 
-    private void Death() {
-        Instantiate(explosion, transform.position, transform.rotation);
-        Destroy(gameObject); // Destroy player gameObject if health is less than zero.
+    public override void TakeDamage(int damage) {
+        base.TakeDamage(damage);    
+        if (!IsAlive()) {
+            Health = 0;
+            Death();
+        }
+        healthBar.SetHealth(Health);
+    }
+
+    protected override void Death() {
+        base.Death();
+        Destroy(gameObject);
         gameController.GameOver();
 
         if (GetComponent<DisableOnDeath>() != null) {
@@ -67,59 +44,39 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public float GetSpeed() {
-        return speed;
-    }
-
-    public float GetTiltStrength() {
-        return tiltStrength;
-    }
-
-    public float GetFireRate() {
-        return fireRate;
-    }
-
-    public GameObject GetShotGameObject() {
-        return shot;
-    }
-
-    public Transform GetShotSpawn() {
-        return shotSpawns;
-    }    
-
-    public void InvokeFire(bool fire, float time) {
-        if (fire) {
-            InvokeRepeating("Fire", time, fireRate);
-        } else {
-            CancelInvoke("Fire");
-        }
-    }
-
-    private void Fire() {
+    protected override void Fire() {
         for (int i = 0; i < currentShotSpawns.Length; i++) {
             GameObject obj = GetComponent<ObjectPoolerScript>().GetPooledObject();
 
             if (obj == null) {
                 return;
             }
-            shotSpawns.rotation = Quaternion.identity;
+            ShotSpawns.rotation = Quaternion.identity;
             obj.transform.position = currentShotSpawns[i].position;
             obj.transform.rotation = currentShotSpawns[i].rotation;
             obj.SetActive(true);
         }
-        GetComponent<AudioSource>().Play();
+        WeaponAudioSource.Play();
     }
 
+    public void InvokeFire(bool fire, float time) {
+        if (fire) {
+            InvokeRepeating("Fire", time, FireRate);
+        } else {
+            CancelInvoke("Fire");
+        }
+    }    
+
     private void ResetFire() {
-        InvokeFire(false, fireRate);
-        InvokeFire(true, fireRate);
+        InvokeFire(false, FireRate);
+        InvokeFire(true, FireRate);
     }
 
     public void UpgradeFireRate() {
-        if (fireRate > lowestFireRate) {
-            fireRate -= fireRateIncreaseRate;
-            if(fireRate < lowestFireRate) {
-                fireRate = lowestFireRate;
+        if (FireRate > lowestFireRate) {
+            FireRate -= fireRateIncreaseRate;
+            if(FireRate < lowestFireRate) {
+                FireRate = lowestFireRate;
             }
         }
         ResetFire();
@@ -149,7 +106,7 @@ public class Player : MonoBehaviour {
     }
 
     public void ResetUpgrades() {
-        fireRate = defaultFireRate; // Reset the fireRate to default rate.
+        FireRate = defaultFireRate; // Reset the fireRate to default rate.
         weaponLevel = 1;
         SetWeaponLevel(weaponLevel);
         ResetFire();

@@ -13,7 +13,7 @@ public class DestroyByContact : MonoBehaviour {
     private void Start () {
         playerObject = GameObject.FindWithTag("Player");
         if (playerObject != null) {
-            playerBoltExplosion = playerObject.GetComponent<Player>().GetShotGameObject().GetComponent<BoltMover>().boltExplosion;
+            playerBoltExplosion = playerObject.GetComponent<Player>().ShotGameObject.GetComponent<BoltMover>().boltExplosion;
         }
 
         enemy = GetComponent<Enemy>();
@@ -34,8 +34,7 @@ public class DestroyByContact : MonoBehaviour {
             if (shotExplosion != null) {
                 Instantiate(shotExplosion, transform.position, transform.rotation);
             }                        
-
-            other.GetComponent<HealthBar>().TakeDamage(damage);
+            
             other.GetComponent<Player>().TakeDamage(damage);
         } else if (gameObject.CompareTag("Enemy") && other.CompareTag("PlayerBolt")) {
             damage = other.GetComponent<BoltMover>().damage;
