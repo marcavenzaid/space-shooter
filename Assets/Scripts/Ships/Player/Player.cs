@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(GameController))]
 public class Player : Ship {
    
-    [SerializeField] private float fireRateIncreaseRate = 0.05f;
+    [SerializeField] [Range(0.01f, 1)] private float fireRateDecreaseRate = 0.05f;
     private GameController gameController;
     private HealthBar healthBar;
     private List<Transform> shotSpawnList = new List<Transform>();
@@ -44,7 +44,7 @@ public class Player : Ship {
         }
     }
 
-    protected override void Fire() {
+    private void Fire() {
         for (int i = 0; i < currentShotSpawns.Length; i++) {
             GameObject obj = GetComponent<ObjectPoolerScript>().GetPooledObject();
 
@@ -53,7 +53,7 @@ public class Player : Ship {
             }
             ShotSpawns.rotation = Quaternion.identity;
             obj.transform.position = currentShotSpawns[i].position;
-            obj.transform.rotation = currentShotSpawns[i].rotation;
+            obj.transform.eulerAngles = currentShotSpawns[i].eulerAngles;
             obj.SetActive(true);
         }
         WeaponAudioSource.Play();
@@ -74,7 +74,7 @@ public class Player : Ship {
 
     public void UpgradeFireRate() {
         if (FireRate > lowestFireRate) {
-            FireRate -= fireRateIncreaseRate;
+            FireRate -= fireRateDecreaseRate;
             if(FireRate < lowestFireRate) {
                 FireRate = lowestFireRate;
             }

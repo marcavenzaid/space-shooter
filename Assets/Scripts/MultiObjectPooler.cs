@@ -11,13 +11,12 @@ public class MultiObjectPooler : MonoBehaviour {
     private List<GameObject> pooledObjects;
     private GameObject lastGivenObject;
 
-    void Start() {
+    private void Awake() {
         pooledObjects = new List<GameObject>();
         for (int j = 0; j < pooledObject.Length; j++) {
             for (int i = 0; i < pooledAmount[j]; i++) {
-                GameObject obj = pooledObject[j];                
+                GameObject obj = Instantiate(pooledObject[j]); 
                 obj.SetActive(false);
-                Instantiate(obj);
                 pooledObjects.Add(obj);
             }
         }
@@ -37,7 +36,6 @@ public class MultiObjectPooler : MonoBehaviour {
             lastGivenObject = obj;
             return obj;
         }
-
         return null;
     }
 

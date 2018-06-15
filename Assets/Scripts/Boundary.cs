@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public class Boundary {
+public class Boundary : System.Object {
 
     [SerializeField] private float xMin, xMax, zMin, zMax;
 

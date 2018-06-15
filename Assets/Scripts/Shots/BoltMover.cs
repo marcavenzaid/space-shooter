@@ -8,9 +8,7 @@ public class BoltMover : MonoBehaviour {
     public float speed;
     public float directionInZAxis; // direction should be either 1 or -1 (forward or backwards in z-axis)    
 
-    void FixedUpdate() {
-        if (enabled) {
-            GetComponent<Rigidbody>().velocity = transform.forward * directionInZAxis * speed;
-        }
+    private void OnEnable() {
+        GetComponent<Rigidbody>().velocity = transform.forward * directionInZAxis * speed;
     }
 }

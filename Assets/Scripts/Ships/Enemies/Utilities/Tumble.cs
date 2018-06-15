@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 
 public class Tumble : MonoBehaviour {
-
-    public float speed;
+    
     public float[] rangeAngularVelocityX = new float[2];
     public float[] rangeAngularVelocityY = new float[2];
     public float[] rangeAngularVelocityZ = new float[2];
+    private float speed;
+
+    private void Awake() {
+        speed = GetComponent<Ship>().Speed;
+    }
 
     public void OnEnable () {
-        GetComponent<Rigidbody>().velocity = transform.forward * speed;
+        GetComponent<Rigidbody>().velocity = -transform.forward * speed;
 
         GetComponent<Rigidbody>().angularVelocity = new Vector3(
             Random.Range(rangeAngularVelocityX[0], rangeAngularVelocityX[1]), 

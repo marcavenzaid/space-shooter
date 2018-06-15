@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour {
         boundaryZMax = player.Bounds.ZMax;
         speed = player.Speed;
         tiltStrength = player.TiltStrength;
-        player.InvokeFire(true, 1f);
+        player.InvokeFire(true, player.FirstAttackDelay);
     }       
 
     private void FixedUpdate() {
@@ -37,8 +37,7 @@ public class PlayerController : MonoBehaviour {
         rb.position = new Vector3(
             Mathf.Clamp(rb.position.x, boundaryXMin, boundaryXMax),
             0.0f,
-            Mathf.Clamp(rb.position.z, boundaryZMin, boundaryZMax)
-        );
+            Mathf.Clamp(rb.position.z, boundaryZMin, boundaryZMax));
 
         // Tilt ship on movement.
         rb.rotation = Quaternion.Euler(0.0f, 0.0f, rb.velocity.x * -tiltStrength);

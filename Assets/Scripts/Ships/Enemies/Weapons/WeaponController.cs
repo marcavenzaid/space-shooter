@@ -48,7 +48,7 @@ public class WeaponController : MonoBehaviour {
                 return;
             }
             shotSpawnArr[i].rotation = Quaternion.identity;
-            obj.transform.position = new Vector3(shotSpawnArr[i].position.x, 0.0f, shotSpawnArr[i].position.z);
+            obj.transform.position = shotSpawnArr[i].position;
             obj.transform.rotation = shotSpawnArr[i].rotation;
             obj.SetActive(true);
 

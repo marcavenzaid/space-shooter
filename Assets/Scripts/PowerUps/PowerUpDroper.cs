@@ -4,7 +4,7 @@ using System.Collections;
 public class PowerUpDroper : MonoBehaviour {
 
     public GameObject[] powerUps;
-    public float powerUpDropChance; // Power ups  
+    public float powerUpDropChance;
 
     public void DropPowerUps() {
         if (Random.value < powerUpDropChance) {

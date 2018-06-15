@@ -6,37 +6,29 @@ using UnityEngine;
 [RequireComponent(typeof(PowerUpDroper))]
 public class Enemy : Ship {
 
-    [SerializeField] private int score;
+    [SerializeField] private int score = 7;
     private Boss boss;
-    private DestructorEnemy destructorEnemy;
     private bool isBoss;
-    private bool isDestructorEnemy;
     private PowerUpDroper powerUpDroper;
 
     protected override void Awake() {
         base.Awake();
-    }
-
-    private void OnEnable() {
-        Health = MaxHealth;
-    }
-
-    private void Start() {
         if (gameObject.CompareTag("Boss")) {
             boss = GetComponent<Boss>();
             isBoss = true;
-        } else if (gameObject.name == "Destructor") {
-            destructorEnemy = GetComponent<DestructorEnemy>();
-            isDestructorEnemy = true;
         }
         powerUpDroper = GetComponent<PowerUpDroper>();
     }
 
-    protected override void Fire() {
-
+    protected PowerUpDroper PowerUpDroper {
+        get { return powerUpDroper; }
     }
 
-    public override void TakeDamage(int damage) {
+    protected virtual void OnEnable() {
+        Health = MaxHealth;
+    }
+
+    public override void TakeDamage(int damage) {        
         if (IsAlive()) {
             base.TakeDamage(damage);
             if (!IsAlive()) {
@@ -48,24 +40,24 @@ public class Enemy : Ship {
     protected override void Death() {
         base.Death();
         powerUpDroper.DropPowerUps();
-        if (isDestructorEnemy) {
-            destructorEnemy.DeathBehavior();
-        } else if (isBoss) {
-            boss.DeathBehavior();            
-        } else {
-            PoolObject(gameObject);
-        }
-
-        if (GetComponent<DisableOnDeath>() != null) {
-            GetComponent<DisableOnDeath>().Disable();
+        if (isBoss) {
+            boss.DeathBehavior();
         }
     }
 
     public int GetScore() {
         return score;
+    }    
+
+    protected void MoveForward() {
+        Rb.velocity = -transform.forward * Speed;
     }
 
-    private void PoolObject(GameObject thisGameObject) {
-        thisGameObject.SetActive(false);
+    protected void StopMovement() {
+        Rb.velocity = Vector3.zero;
+    }
+
+    protected void ClampXPosition() {
+        Rb.position = new Vector3(Mathf.Clamp(Rb.position.x, Bounds.XMin, Bounds.XMax), 0, Rb.position.z);
     }
 }

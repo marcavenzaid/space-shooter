@@ -2,25 +2,26 @@
 
 public abstract class Ship : MonoBehaviour {
 
-    [SerializeField] private Boundary bounds = new Boundary(-8, 8, -7, 12);
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private float speed = 10;
+    [SerializeField] private Boundary bounds = new Boundary(-8, 8, -15, 25);
+    [SerializeField] private int maxHealth = 1;
+    [SerializeField] private float speed = 2.5f;
     [SerializeField] private float tiltStrength = 4;
     [SerializeField] private GameObject shotGameObject;
     [SerializeField] private Transform shotSpawns;
-    [SerializeField] private float fireRate = 0.5f;
-    [SerializeField] private GameObject explosion;
+    [SerializeField] private float fireRate = 1.5f;
+    [SerializeField] private Vector2 firstAttackDelay = new Vector2(1, 1);
+    [SerializeField] private GameObject explosion;    
     private int health;
     private AudioSource weaponAudioSource;
+    private Rigidbody rb;
 
     public Boundary Bounds {
         get { return bounds; }
-        private set { bounds = value; }
     }
 
     public int MaxHealth {
         get { return maxHealth; }
-        private set { maxHealth = value; }
+        set { maxHealth = value; }
     }
 
     public int Health {
@@ -35,7 +36,6 @@ public abstract class Ship : MonoBehaviour {
 
     public float TiltStrength {
         get { return tiltStrength; }
-        set { tiltStrength = value; }
     }
 
     public GameObject ShotGameObject {
@@ -53,6 +53,10 @@ public abstract class Ship : MonoBehaviour {
         set { fireRate = value; }
     }
 
+    public float FirstAttackDelay {
+        get { return Random.Range(firstAttackDelay.x, firstAttackDelay.y); }
+    }
+
     protected GameObject Explosion {
         get { return explosion; }
         set { explosion = value; }
@@ -62,19 +66,22 @@ public abstract class Ship : MonoBehaviour {
         get { return weaponAudioSource; }
     }
 
-    protected virtual void Awake() {
-        MaxHealth = Health = maxHealth;
-        Speed = speed;
-        TiltStrength = tiltStrength;
-        ShotGameObject = shotGameObject;
-        ShotSpawns = shotSpawns;
-        FireRate = fireRate;
-        Explosion = explosion;
-        Bounds = bounds;
-        weaponAudioSource = GetComponent<AudioSource>();
+    protected Rigidbody Rb {
+        get { return rb; }
     }
 
-    protected abstract void Fire();
+    protected virtual void Awake() {   
+        if(MaxHealth <= 0) {
+            MaxHealth = 1;
+        }
+        Health = MaxHealth;
+        weaponAudioSource = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody>();
+    }    
+
+    public bool IsAlive() {
+        return Health > 0;
+    }
 
     public virtual void TakeDamage(int damage) {
         Health -= damage;
@@ -82,13 +89,10 @@ public abstract class Ship : MonoBehaviour {
 
     protected virtual void Death() {
         Instantiate(Explosion, transform.position, transform.rotation);
-    }
+        PoolObject();
+    }    
 
-    public void SubtractHealth(int value) {
-        Health -= value;
-    }
-
-    public bool IsAlive() {
-        return Health > 0;
+    protected void PoolObject() {
+        gameObject.SetActive(false);
     }
 }
