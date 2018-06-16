@@ -1,13 +1,9 @@
 ﻿using UnityEngine;
 
+[RequireComponent(typeof(DisableOnDeath))]
 [RequireComponent(typeof(Tumble))]
 [RequireComponent(typeof(WeaponControllerMissile))]
-[RequireComponent(typeof(DisableOnDeath))]
 public class Destructor : BasicEnemy {
-
-    protected override void Awake() {
-        base.Awake();        
-    }
 
     protected override void OnEnable() {
         base.OnEnable();

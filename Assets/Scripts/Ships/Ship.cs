@@ -4,7 +4,8 @@ public abstract class Ship : MonoBehaviour {
 
     [SerializeField] private Boundary bounds = new Boundary(-8, 8, -15, 25);
     [SerializeField] private int maxHealth = 1;
-    [SerializeField] private float speed = 2.5f;
+    [SerializeField] private float horizontalSpeed = 2.5f;
+    [SerializeField] private float verticalSpeed = 2.5f;    
     [SerializeField] private float tiltStrength = 4;
     [SerializeField] private GameObject shotGameObject;
     [SerializeField] private Transform shotSpawns;
@@ -17,6 +18,7 @@ public abstract class Ship : MonoBehaviour {
 
     public Boundary Bounds {
         get { return bounds; }
+        set { bounds = value; }
     }
 
     public int MaxHealth {
@@ -29,10 +31,15 @@ public abstract class Ship : MonoBehaviour {
         set { health = value; }
     }
 
-    public float Speed {
-        get { return speed; }
-        private set { speed = value; }
+    public float HorizontalSpeed {
+        get { return horizontalSpeed; }
+        private set { horizontalSpeed = value; }
     }
+
+    public float VerticalSpeed {
+        get { return verticalSpeed; }
+        private set { verticalSpeed = value; }
+    }    
 
     public float TiltStrength {
         get { return tiltStrength; }
@@ -43,7 +50,7 @@ public abstract class Ship : MonoBehaviour {
         set { shotGameObject = value; }
     }
 
-    protected Transform ShotSpawns {
+    public Transform ShotSpawns {
         get { return shotSpawns; }
         set { shotSpawns = value; }
     }
@@ -62,7 +69,7 @@ public abstract class Ship : MonoBehaviour {
         set { explosion = value; }
     }
 
-    protected AudioSource WeaponAudioSource {
+    public AudioSource WeaponAudioSource {
         get { return weaponAudioSource; }
     }
 

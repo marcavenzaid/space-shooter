@@ -8,7 +8,7 @@ public class Tumble : MonoBehaviour {
     private float speed;
 
     private void Awake() {
-        speed = GetComponent<Ship>().Speed;
+        speed = GetComponent<Ship>().VerticalSpeed;
     }
 
     public void OnEnable () {

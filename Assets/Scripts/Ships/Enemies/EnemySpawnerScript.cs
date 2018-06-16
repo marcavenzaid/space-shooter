@@ -139,5 +139,5 @@ public class EnemySpawnerScript : MonoBehaviour {
         //// Invoke the firing of the player.
         //yield return new WaitForSeconds(15);
         //GameObject.FindWithTag("Player").GetComponent<Player>().InvokeFire(true, 0);
-    }    
+    }
 }

@@ -50,7 +50,7 @@ public class Enemy : Ship {
     }    
 
     protected void MoveForward() {
-        Rb.velocity = -transform.forward * Speed;
+        Rb.velocity = -transform.forward * VerticalSpeed;
     }
 
     protected void StopMovement() {

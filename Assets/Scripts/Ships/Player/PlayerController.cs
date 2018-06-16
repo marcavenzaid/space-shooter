@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour {
     private Transform shotSpawns;
     private Rigidbody rb;
     private float boundaryXMin, boundaryXMax, boundaryZMin, boundaryZMax;
-    private float speed;
+    private float horizontalSpeed;
+    private float verticalSpeed;    
     private float tiltStrength;
 
     private void Awake() {
@@ -21,7 +22,8 @@ public class PlayerController : MonoBehaviour {
         boundaryXMax = player.Bounds.XMax;
         boundaryZMin = player.Bounds.ZMin;
         boundaryZMax = player.Bounds.ZMax;
-        speed = player.Speed;
+        horizontalSpeed = player.HorizontalSpeed;
+        verticalSpeed = player.VerticalSpeed;        
         tiltStrength = player.TiltStrength;
         player.InvokeFire(true, player.FirstAttackDelay);
     }       
@@ -30,8 +32,8 @@ public class PlayerController : MonoBehaviour {
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        rb.velocity = movement * speed;
+        Vector3 movement = new Vector3(moveHorizontal * horizontalSpeed, 0.0f, moveVertical * verticalSpeed);
+        rb.velocity = movement;
 
         // Clamps the Player inside the game area.
         rb.position = new Vector3(

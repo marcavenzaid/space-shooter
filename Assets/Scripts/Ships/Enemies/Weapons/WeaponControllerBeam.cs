@@ -2,76 +2,69 @@
 using System.Collections;
 
 public class WeaponControllerBeam : MonoBehaviour {
+    
+    [SerializeField] private GameObject[] beamChargeEffect;
+    [SerializeField] private float[] beamChargeMaxScale;
+    [SerializeField] private float[] beamChargeScaling;
+    [SerializeField] private float chargeSpeed;
+    [SerializeField] private float fireRateMin, fireRateMax;        
+    private Ship ship;
+    private GameObject shotGameObject;
+    private Transform[] shotSpawnArr;
+    private int shotSpawnArrLength;
+    private AudioSource weaponAudioSource;
+    private float[] nextChanceToFire;
+    private bool[] isCharging;
 
-    public GameObject[] shot;
-    public Transform[] shotSpawn;
-    public GameObject[] beamChargeEffect;
-    public float[] maxScale;
-    public float[] scaling;
-    public float fireRateMin, fireRateMax;
-    public float chargeSpeed;
-
-    private AudioSource[] audioSource;
-    private float[] nextChanceToFire = new float[5]; // I decided that the maximum amount of arrays for this script is 5    
-    private bool[] charging = new bool[5]; // I decided that the maximum amount of arrays for this script is 5
-
-    // The EnemyDroid Boss Ship chronological order of the elements is from 
-    // left secondary weapon, right secondary weapon, left canon, then right canon
-
-    void Start () {        
-        for (int i = 0; i < shot.Length; i++) {
-            maxScale[i] *= 0.75f;
-            scaling[i] *= 0.75f;
+    private void Awake() {
+        ship = GetComponent<Ship>();
+        shotGameObject = ship.ShotGameObject;
+        if (ship.ShotSpawns != null && ship.ShotSpawns.childCount > 0) {
+            shotSpawnArr = new Transform[ship.ShotSpawns.childCount];
+            for (int i = 0; i < ship.ShotSpawns.childCount; i++) {
+                shotSpawnArr[i] = ship.ShotSpawns.GetChild(i);
+            }
+        } else {
+            shotSpawnArr = new Transform[] { ship.ShotSpawns };
         }
-        audioSource = GetComponents<AudioSource>();
+        shotSpawnArrLength = shotSpawnArr.Length;
+        nextChanceToFire = new float[shotSpawnArrLength];
+        isCharging = new bool[shotSpawnArrLength];
+        weaponAudioSource = ship.WeaponAudioSource;
     }
 
-    void OnEnable() {
-        for (int i = 0; i < shot.Length; i++) {
+    private void OnEnable() {
+        for (int i = 0; i < shotSpawnArrLength; i++) {
             beamChargeEffect[i].transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
-            charging[i] = false;
             nextChanceToFire[i] = Time.time + Random.Range(fireRateMin, fireRateMax);
+            isCharging[i] = false;
         }
     }
-	
-	void Update () {        
-        for (int i = 0; i < shot.Length; i++) {
-            if (Time.time >= nextChanceToFire[i] && !charging[i]) {
-                charging[i] = true;
+
+	private void Update () {        
+        for (int i = 0; i < shotSpawnArrLength; i++) {
+            if (Time.time >= nextChanceToFire[i] && !isCharging[i]) {
+                isCharging[i] = true;
             }
 
-            if (charging[i]) {
-                if (beamChargeEffect[i].transform.localScale.x >= maxScale[i]) {
-                    beamChargeEffect[i].transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
-                    charging[i] = false;
-                    
-                    Instantiate(
-                        shot[i], 
-                        new Vector3(shotSpawn[i].position.x, 0.0f, shotSpawn[i].position.z), 
-                        Quaternion.Euler(0.0f, shotSpawn[i].eulerAngles.y, 0.0f)
-                    );
-
-                    nextChanceToFire[i] = Time.time + Random.Range(fireRateMin, fireRateMax);
-                    if (audioSource.Length == 1) {
-                        audioSource[0].Play();
-                    } else {
-                        audioSource[1].Play();
-                    }                    
+            if (isCharging[i]) {
+                if (beamChargeEffect[i].transform.localScale.x < beamChargeMaxScale[i]) {
+                    beamChargeEffect[i].transform.localScale += new Vector3(beamChargeScaling[i], beamChargeScaling[i], 0) * chargeSpeed * Time.deltaTime;                                      
                 } else {
-                    beamChargeEffect[i].transform.localScale += new Vector3(scaling[i], scaling[i], scaling[i]) * chargeSpeed * Time.deltaTime;
-                }                
-            }            
-        }               
+                    Instantiate(shotGameObject, shotSpawnArr[i].position, shotSpawnArr[i].rotation);
+                    weaponAudioSource.Play();
+                    nextChanceToFire[i] = Time.time + Random.Range(fireRateMin, fireRateMax);                    
+                    beamChargeEffect[i].transform.localScale = new Vector3(0, 0, 1);
+                    isCharging[i] = false;
+                }
+            }
+        }
     }
 
     // This method will be used when the Ship is destroyed.
     public void StopAllBeamOperation() {
-        for (int i = 0; i < shot.Length; i++) {
+        for (int i = 0; i < shotSpawnArrLength; i++) {
             beamChargeEffect[i].transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);                
         }
-    }
-
-    bool willIFire() {
-        return (Random.value > 0.75f);
     }
 }

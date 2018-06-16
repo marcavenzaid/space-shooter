@@ -16,6 +16,7 @@ public class Player : Ship {
     protected override void Awake () {        
         base.Awake();
 
+        Bounds = new Boundary(-8, 8, -7, 12);
         foreach (Transform t in ShotSpawns) {
             shotSpawnList.Add(t);
         }
