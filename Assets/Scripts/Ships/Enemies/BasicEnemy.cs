@@ -4,29 +4,29 @@ using UnityEngine;
 [RequireComponent(typeof(EvasiveManeuver))]
 public class BasicEnemy : Enemy {
 
+    [SerializeField] private Transform shotSpawns;
     private float targetManeuver;
     private Transform[] shotSpawnArr;    
-
-    protected override void Awake() {
-        base.Awake();
-        if (ShotSpawns != null && ShotSpawns.childCount > 0) {
-            shotSpawnArr = new Transform[ShotSpawns.childCount];
-            for (int i = 0; i < ShotSpawns.childCount; i++) {
-                shotSpawnArr[i] = ShotSpawns.GetChild(i);
-            }
-        } else {
-            shotSpawnArr = new Transform[] { ShotSpawns };
-        }
-    }
 
     protected override void OnEnable() {
         base.OnEnable();
         MoveForward();
-        InvokeFire(true);
+        InvokeRepeatingFire(true);
+    }
+
+    private void Start() {
+        if (shotSpawns != null && shotSpawns.childCount > 0) {
+            shotSpawnArr = new Transform[shotSpawns.childCount];
+            for (int i = 0; i < shotSpawns.childCount; i++) {
+                shotSpawnArr[i] = shotSpawns.GetChild(i);
+            }
+        } else {
+            shotSpawnArr = new Transform[] { shotSpawns };
+        }
     }
 
     private void OnDisable() {
-        InvokeFire(false);
+        InvokeRepeatingFire(false);
     }
 
     private void FixedUpdate() {
@@ -48,7 +48,7 @@ public class BasicEnemy : Enemy {
         WeaponAudioSource.Play();
     }
 
-    protected void InvokeFire(bool invoke) {
+    protected void InvokeRepeatingFire(bool invoke) {
         if (invoke) {
             InvokeRepeating("Fire", FirstAttackDelay, FireRate);
         } else {

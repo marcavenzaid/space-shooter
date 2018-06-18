@@ -1,52 +1,65 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class WeaponControllerMissile : MonoBehaviour {
-
-    public GameObject shot;
-    public Transform[] shotSpawns;
-    public GameObject[] missiles;
-    public float firstAttackDelayMin, firstAttackDelayMax;
-    public float fireRateMin, fireRateMax;
-
+    
+    [SerializeField] private float firstAttackDelayMin = 1, firstAttackDelayMax = 4;
+    [SerializeField] private float fireRateMin = 0, fireRateMax = 4;
+    private GameObject missileGameObject;
+    private List<GameObject> missileAmmunation;
+    private List<Transform> shotSpawns;
     private float nextFire;
     private int missileIndex;
 
-    void OnEnable() {
-        FisherYates2(shotSpawns, missiles); // randomize the array of shotSpawns.
-        missileIndex = 0;
-        nextFire = Time.time + Random.Range(firstAttackDelayMin, firstAttackDelayMax);
-        for (int i = 0; i < missiles.Length; i++) {
-            missiles[i].SetActive(true);
-        }
+    public GameObject MissileGameObject {
+        private get { return missileGameObject; }
+        set { missileGameObject = value; }
     }
 
-    void Update() {
-        if (missileIndex < shotSpawns.Length && missiles[missileIndex] != null) {
-            if (Time.time > nextFire) {
-                Fire();
-                nextFire = Time.time + Random.Range(fireRateMin, fireRateMax);
-            }
+    public List<GameObject> MissileAmmunation {
+        get { return missileAmmunation; }
+        set { missileAmmunation = value; }
+    }
+
+    public List<Transform> ShotSpawns {
+        get { return shotSpawns; }
+        set { shotSpawns = value; }
+    }
+
+    private void OnEnable() {
+        missileIndex = 0;
+    }
+
+    private void Start() {
+        FisherYates(missileAmmunation, ShotSpawns);
+        nextFire = Time.time + Random.Range(firstAttackDelayMin, firstAttackDelayMax);
+    }
+
+    private void Update() {
+        if (Time.time > nextFire && missileIndex < missileAmmunation.Count) {
+            Fire();
+            nextFire = Time.time + Random.Range(fireRateMin, fireRateMax);
         }                
     }
 
-    void Fire() {
-        Instantiate(shot, shotSpawns[missileIndex].position, shotSpawns[missileIndex].rotation);
-        missiles[missileIndex].SetActive(false);
+    private void Fire() {
+        Instantiate(MissileGameObject, ShotSpawns[missileIndex].position, ShotSpawns[missileIndex].rotation);
+        missileAmmunation[missileIndex].SetActive(false);
         missileIndex++;
     }
 
-    private void FisherYates2(Transform[] array1, GameObject[] array2) {
-        for (int i = array1.Length - 1; i > 0; i--) {
+    public static void FisherYates(List<GameObject> missileDecorations, List<Transform> shotSpawns) {
+        for (int i = missileDecorations.Count - 1; i > 0; i--) {
             int index = Random.Range(0, i);
-            // swap array1
-            Transform tmp1 = array1[index];
-            array1[index] = array1[i];
-            array1[i] = tmp1;
-            //swap array2
-            GameObject tmp2 = array2[index];
-            array2[index] = array2[i];
-            array2[i] = tmp2;
+            GameObject tmp = missileDecorations[index];
+            missileDecorations[index] = missileDecorations[i];
+            missileDecorations[i] = tmp;
+
+            Transform tmp2 = shotSpawns[index];
+            shotSpawns[index] = shotSpawns[i];
+            shotSpawns[i] = tmp2;
         }
     }
 }

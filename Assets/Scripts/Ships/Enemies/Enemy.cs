@@ -18,14 +18,14 @@ public class Enemy : Ship {
             isBoss = true;
         }
         powerUpDroper = GetComponent<PowerUpDroper>();
+    }    
+
+    protected virtual void OnEnable() {
+        Health = MaxHealth;
     }
 
     protected PowerUpDroper PowerUpDroper {
         get { return powerUpDroper; }
-    }
-
-    protected virtual void OnEnable() {
-        Health = MaxHealth;
     }
 
     public override void TakeDamage(int damage) {        
@@ -59,5 +59,5 @@ public class Enemy : Ship {
 
     protected void ClampXPosition() {
         Rb.position = new Vector3(Mathf.Clamp(Rb.position.x, Bounds.XMin, Bounds.XMax), 0, Rb.position.z);
-    }
+    }    
 }

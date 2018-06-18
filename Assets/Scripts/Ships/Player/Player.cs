@@ -3,7 +3,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(GameController))]
 public class Player : Ship {
-   
+
+    [SerializeField] private Transform shotSpawns;
     [SerializeField] [Range(0.01f, 1)] private float fireRateDecreaseRate = 0.05f;
     private GameController gameController;
     private HealthBar healthBar;
@@ -17,9 +18,9 @@ public class Player : Ship {
         base.Awake();
 
         Bounds = new Boundary(-8, 8, -7, 12);
-        foreach (Transform t in ShotSpawns) {
+        foreach (Transform t in shotSpawns) {
             shotSpawnList.Add(t);
-        }
+        }        
         SetWeaponLevel(1);
         defaultFireRate = FireRate;
         gameController = GameObject.FindWithTag("GameController").GetComponent<GameController>();
@@ -52,7 +53,7 @@ public class Player : Ship {
             if (obj == null) {
                 return;
             }
-            ShotSpawns.rotation = Quaternion.identity;
+            shotSpawns.rotation = Quaternion.identity;
             obj.transform.position = currentShotSpawns[i].position;
             obj.transform.eulerAngles = currentShotSpawns[i].eulerAngles;
             obj.SetActive(true);

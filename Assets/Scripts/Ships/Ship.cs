@@ -5,13 +5,12 @@ public abstract class Ship : MonoBehaviour {
     [SerializeField] private Boundary bounds = new Boundary(-8, 8, -15, 25);
     [SerializeField] private int maxHealth = 1;
     [SerializeField] private float horizontalSpeed = 2.5f;
-    [SerializeField] private float verticalSpeed = 2.5f;    
+    [SerializeField] private float verticalSpeed = 2.5f;
     [SerializeField] private float tiltStrength = 4;
-    [SerializeField] private GameObject shotGameObject;
-    [SerializeField] private Transform shotSpawns;
+    [SerializeField] private GameObject shotGameObject;    
     [SerializeField] private float fireRate = 1.5f;
     [SerializeField] private Vector2 firstAttackDelay = new Vector2(1, 1);
-    [SerializeField] private GameObject explosion;    
+    [SerializeField] private GameObject explosion;
     private int health;
     private AudioSource weaponAudioSource;
     private Rigidbody rb;
@@ -50,11 +49,6 @@ public abstract class Ship : MonoBehaviour {
         set { shotGameObject = value; }
     }
 
-    public Transform ShotSpawns {
-        get { return shotSpawns; }
-        set { shotSpawns = value; }
-    }
-
     protected float FireRate {
         get { return fireRate; }
         set { fireRate = value; }
@@ -71,10 +65,12 @@ public abstract class Ship : MonoBehaviour {
 
     public AudioSource WeaponAudioSource {
         get { return weaponAudioSource; }
+        private set { weaponAudioSource = value; }
     }
 
     protected Rigidbody Rb {
         get { return rb; }
+        private set { rb = value; }
     }
 
     protected virtual void Awake() {   
@@ -82,8 +78,8 @@ public abstract class Ship : MonoBehaviour {
             MaxHealth = 1;
         }
         Health = MaxHealth;
-        weaponAudioSource = GetComponent<AudioSource>();
-        rb = GetComponent<Rigidbody>();
+        WeaponAudioSource = GetComponent<AudioSource>();
+        Rb = GetComponent<Rigidbody>();
     }    
 
     public bool IsAlive() {

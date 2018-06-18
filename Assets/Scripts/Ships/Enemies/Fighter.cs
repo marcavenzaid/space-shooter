@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(DisableOnDeath))]
-[RequireComponent(typeof(Tumble))]
 [RequireComponent(typeof(WeaponControllerMissile))]
-public class Destructor : BasicEnemy {
+public class Fighter : BasicEnemy {
 
     [SerializeField] private GameObject missileGameObject;
     [SerializeField] private Transform missileAmmunation;
@@ -32,20 +31,8 @@ public class Destructor : BasicEnemy {
 
     protected override void OnEnable() {
         base.OnEnable();
-        GetComponent<EvasiveManeuver>().enabled = true;
-        GetComponent<WeaponControllerMissile>().enabled = true;
-        GetComponent<Tumble>().enabled = false;
-        GetComponent<DisableOnDeath>().Enable();
-    }
-
-    protected override void Death() {
-        Instantiate(Explosion, transform.position, transform.rotation);
-        PowerUpDroper.DropPowerUps();
-        InvokeRepeatingFire(false);
-        StopMovement();
-        GetComponent<EvasiveManeuver>().enabled = false;
-        GetComponent<WeaponControllerMissile>().enabled = false;        
-        GetComponent<Tumble>().enabled = true;
-        GetComponent<DisableOnDeath>().Disable();
+        foreach (GameObject missile in weaponControllerMissile.MissileAmmunation) {
+            missile.SetActive(true);
+        }
     }
 }

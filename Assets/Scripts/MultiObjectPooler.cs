@@ -20,7 +20,7 @@ public class MultiObjectPooler : MonoBehaviour {
                 pooledObjects.Add(obj);
             }
         }
-    }    
+    }
 
     public GameObject GetPooledObject(string thisObject) {
         for (int i = 0; i < pooledObjects.Count; i++) {
